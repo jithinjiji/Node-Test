@@ -3,12 +3,12 @@ export interface StockLevel {
   qty: number;
 }
 
-export interface StockType{
+export interface StockInfo{
   sku: string;
   stock: number;
 }
 
-export interface TransactionType {
+export interface TransactionInfo {
   sku: string;
   type: string;
   qty: number

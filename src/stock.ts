@@ -1,5 +1,5 @@
 import constants from "./constants";
-import { StockLevel, StockType, TransactionType } from "./types"
+import { StockLevel, StockInfo, TransactionInfo } from "./types"
 
 /**
  * Returns the initial stock for the provided SKU
@@ -7,9 +7,9 @@ import { StockLevel, StockType, TransactionType } from "./types"
  * @param sku Product SKU
  * @returns Initial stock
  */
-export async function getInitialStockBySKU(sku: string): Promise<StockType | undefined> {
+export async function getInitialStockBySKU(sku: string): Promise<StockInfo | undefined> {
   const stockLoader = import('../stock.json');
-  const stocks: StockType[] = (await stockLoader).default ?? [];
+  const stocks: StockInfo[] = (await stockLoader).default ?? [];
   return stocks.find(stock => stock.sku === sku)
 }
 
@@ -19,9 +19,9 @@ export async function getInitialStockBySKU(sku: string): Promise<StockType | und
  * @param sku Product SKU
  * @returns Transactions
  */
-export async function getTransactionsBySKU(sku: string): Promise<TransactionType[]> {
+export async function getTransactionsBySKU(sku: string): Promise<TransactionInfo[]> {
   const transactionLoader = import('../transactions.json');
-  const transactions: TransactionType[] = (await transactionLoader).default ?? [];
+  const transactions: TransactionInfo[] = (await transactionLoader).default ?? [];
   return transactions.filter(transaction => transaction.sku === sku)
 }
 
@@ -36,7 +36,7 @@ export async function getTransactionsBySKU(sku: string): Promise<TransactionType
 export function getStockLevelAfterTransactions(
   sku: string,
   initialStock: number,
-  transactions: TransactionType[]
+  transactions: TransactionInfo[]
 ): StockLevel {
   let qty = initialStock;
 
@@ -63,8 +63,8 @@ export function getStockLevelAfterTransactions(
  * @param sku SKU code
  */
 export async function getCurrentStockLevelBySKU(sku: string): Promise<StockLevel> {
-  let initialStock: StockType | undefined;
-  let transactions: TransactionType[];
+  let initialStock: StockInfo | undefined;
+  let transactions: TransactionInfo[];
   [initialStock, transactions] = await Promise.all([
     getInitialStockBySKU(sku),
     getTransactionsBySKU(sku)
